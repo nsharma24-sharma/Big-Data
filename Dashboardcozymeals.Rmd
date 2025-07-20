@@ -1,0 +1,128 @@
+---
+title: "Cozymeals Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    css: www/style.css
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(DT)
+library(httr)
+library(jsonlite)
+library(plotly)
+library(tidyverse)
+
+```
+
+Column {data-width=40%}
+-----------------------------------------------------------------------
+
+### Ingredient Input  
+
+```{r}
+textInput("ingredients", "Enter your leftover ingredients:", "")
+actionButton("generate", "Generate Recipe", class = "btn btn-success")
+
+```
+### Recipe Suggestions
+
+```{r}
+# Templates for accessible instructions
+templates <- list(
+  "Stir‑Fry" = "Heat oil in a pan. Add {{ingredients}} and stir-fry until cooked. Season with soy sauce and pepper. Serve hot with rice.",
+  "Omelette" = "Beat eggs and mix with {{ingredients}}. Cook in a pan until set. Fold and serve warm.",
+  "Smoothie" = "Blend {{ingredients}} with yogurt or milk. Add honey if desired. Serve chilled.",
+  "Soup" = "Simmer {{ingredients}} in broth. Add herbs, seasonings. Cook until soft and enjoy with toast.",
+  "Pasta Toss" = "Cook pasta. Sauté {{ingredients}} in olive oil, mix with pasta, and sprinkle cheese on top."
+)
+
+selectedRecipeType <- reactiveVal("None")
+
+output$recipe <- renderUI({
+  req(input$generate)
+  
+  # Define `ing` from user input
+  ing <- strsplit(input$ingredients, ",")[[1]] %>% trimws()
+  
+  # Logic to determine template
+  tmpl <- if (any(grepl("egg|cheese|onion", ing, ignore.case = TRUE))) {
+    "Omelette"
+  } else if (any(grepl("pasta|noodle", ing, ignore.case = TRUE))) {
+    "Pasta Toss"
+  } else if (any(grepl("fruit|banana|mango", ing, ignore.case = TRUE))) {
+    "Smoothie"
+  } else if (any(grepl("carrot|celery|stock", ing, ignore.case = TRUE))) {
+    "Soup"
+  } else {
+    "Stir‑Fry"
+  }
+
+  selectedRecipeType(tmpl)  # optional reactiveVal
+
+  txt <- gsub("\\{\\{ingredients\\}\\}", paste(ing, collapse = ", "), templates[[tmpl]])
+  
+  HTML(paste0("<h4 style='color:#005f73;'>", tmpl, " Recipe</h4><pre style='white-space: pre-wrap;'>", txt, "</pre>"))
+})
+
+uiOutput("recipe")
+```
+Column {data-width=30%}
+-----------------------------------------------------------------------
+
+### Nutrients Table 
+
+```{r}
+output$recipeTable <- renderDT({
+  req(input$generate)
+  ing <- strsplit(input$ingredients, ",")[[1]] %>% trimws()
+
+  # Original data as a named vector
+  values <- c(
+    Calories = sample(150:300, 1),
+    Carbs = paste0(sample(20:50, 1), "g"),
+    Protein = paste0(sample(5:15, 1), "g"),
+    Fat = paste0(sample(2:10, 1), "g"),
+    Fiber = paste0(sample(1:5, 1), "g")
+  )
+
+  df <- data.frame(
+    Nutrient = names(values),
+    Value = unname(values),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+  )
+
+  datatable(df, rownames = FALSE, options = list(dom = 't'))  # removes search box etc.
+})
+
+DTOutput("recipeTable")
+```
+Column {data-width=25%}
+-----------------------------------------------------------------------
+### Macronutrients Pie Chart
+
+```{r}
+output$nutritionPlot <- renderPlotly({
+  req(input$generate)
+  ing <- input$ingredients
+
+  # Dummy macro values (replace with real logic or API)
+  macros <- data.frame(
+    Nutrient = c("Carbs", "Protein", "Fat"),
+    Value = c(80, 15, 5)
+  )
+
+  plot_ly(macros, labels = ~Nutrient, values = ~Value, type = 'pie') %>%
+    layout(title = "Macronutrient Breakdown",
+           showlegend = TRUE)
+})
+
+plotlyOutput("nutritionPlot")
+
+```
+

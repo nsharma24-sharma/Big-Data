@@ -1,0 +1,99 @@
+/* General layout and background */
+body {
+  background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: 'Segoe UI', sans-serif;
+  color: #2c3e50;
+}
+
+/* Dashboard title and headers */
+h2, h3, h4, h5 {
+  color: #1a237e;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Input boxes */
+input[type="text"] {
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #f8f9fa;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+  border-color: #0077b6;
+  outline: none;
+  box-shadow: 0 0 4px rgba(0,119,182,0.2);
+}
+
+/* Buttons */
+.btn-success, .btn-primary {
+  background-color: #0077b6;
+  border-color: #0077b6;
+  font-weight: 600;
+  color: #fff;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.btn-success:hover, .btn-primary:hover {
+  background-color: #023e8a;
+  border-color: #023e8a;
+}
+
+/* Panel / Card style (like recipe blocks) */
+.well, .form-group, .datatables {
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+/* Suggested Recipe Box */
+pre {
+  background-color: #e3f2fd;
+  border-left: 6px solid #0077b6;
+  padding: 18px;
+  font-weight: bold;
+  color: #0d47a1;
+  font-size: 1rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  margin-top: 10px;
+}
+
+/* DataTables styling */
+.table {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Charts container */
+.plot-container {
+  background-color: rgba(255,255,255,0.88);
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.07);
+}
+
+/* Center and style chart headings */
+h5 {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #1a237e;
+}
